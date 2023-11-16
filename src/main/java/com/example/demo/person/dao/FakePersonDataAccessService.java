@@ -1,6 +1,6 @@
-package com.example.demo.dao;
+package com.example.demo.person.dao;
 
-import com.example.demo.model.Person;
+import com.example.demo.person.model.Person;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class FakePersonDataAccessService implements PersonDao {
 
     @Override
     public int insertPerson(UUID id, Person person) {
-        DB.add(new Person(id,  person.getName()));
+        DB.add(new Person(id,  person.name()));
         return 1;
     }
 
@@ -32,7 +32,7 @@ public class FakePersonDataAccessService implements PersonDao {
 
     @Override
     public Optional<Person> getPersonById(UUID id) {
-        return DB.stream().filter(person -> person.getId().equals(id)).findFirst();
+        return DB.stream().filter(person -> person.id().equals(id)).findFirst();
     }
 
     @Override
@@ -41,16 +41,11 @@ public class FakePersonDataAccessService implements PersonDao {
                 .map(p -> {
                     int indexOfPerson = DB.indexOf(p);
                     if (indexOfPerson >= 0) {
-                        DB.set(indexOfPerson, new Person(id, person.getName()));
+                        DB.set(indexOfPerson, new Person(id, person.name()));
                         return 1;
                     }
                     return 0;
                 });
-    }
-
-    @Override
-    public void getDiscountByPromo(String shdes, String promoCode) {
-        //call database request
     }
 
 }

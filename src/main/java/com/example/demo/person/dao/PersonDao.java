@@ -1,6 +1,6 @@
-package com.example.demo.dao;
+package com.example.demo.person.dao;
 
-import com.example.demo.model.Person;
+import com.example.demo.person.model.Person;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,5 @@ public interface PersonDao {
     Optional<Person> getPersonById(UUID id);
 
     void updatePerson (UUID id, Person person);
-
-    void getDiscountByPromo(String shdes, String promoCode);
 
 }

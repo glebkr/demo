@@ -1,7 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.person.service;
 
-import com.example.demo.dao.PersonDao;
-import com.example.demo.model.Person;
+import com.example.demo.person.dao.PersonDao;
+import com.example.demo.person.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -38,10 +38,6 @@ public class PersonService {
 
     public void updatePerson(UUID id, Person person) {
         personDao.updatePerson(id, person);
-    }
-
-    public void getDiscountByPromo(String shdes, String promoCode) {
-        personDao.getDiscountByPromo(shdes, promoCode);
     }
 
 }

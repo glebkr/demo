@@ -1,6 +1,9 @@
-package com.example.demo.dao;
+package com.example.demo.person.dao;
 
-import com.example.demo.model.Person;
+import com.example.demo.DemoApplication;
+import com.example.demo.person.model.Person;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,6 +17,8 @@ public class PersonDataAccessService implements PersonDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final Logger logger = LogManager.getLogger(DemoApplication.class.getName());
+
     @Autowired
     public PersonDataAccessService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -21,13 +26,14 @@ public class PersonDataAccessService implements PersonDao {
     @Override
     public int insertPerson(UUID id, Person person) {
         final String sql = "INSERT INTO person (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(sql, id, person.getName());
+        jdbcTemplate.update(sql, id, person.name());
         return 1;
     }
 
     @Override
     public List<Person> selectAllPeople() {
         final String sql = "SELECT id, name FROM person";
+        logger.debug("Select SQL query:" + sql);
         return jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID id = UUID.fromString(resultSet.getString("id"));
             String name = resultSet.getString("name");
@@ -44,22 +50,19 @@ public class PersonDataAccessService implements PersonDao {
     @Override
     public Optional<Person> getPersonById(UUID id) {
         final String sql = "SELECT id, name FROM person WHERE id = ?";
-        Person person = jdbcTemplate.queryForObject(sql, (resultSet, i) -> {
-            UUID personId = UUID.fromString(resultSet.getString("id"));
-            String name = resultSet.getString("name");
-            return new Person(personId, name);
-        }, id);
+        Person person = jdbcTemplate.queryForObject(
+                sql, (resultSet, i) -> {
+                    UUID personId = UUID.fromString(resultSet.getString("id"));
+                    String name = resultSet.getString("name");
+                    return new Person(personId, name);
+                }, id);
         return Optional.ofNullable(person);
     }
 
     @Override
     public void updatePerson(UUID id, Person person) {
         final String sql = "UPDATE person SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, person.getName(), id);
+        jdbcTemplate.update(sql, person.name(), id);
     }
 
-    @Override
-    public void getDiscountByPromo(String shdes, String promoCode) {
-
-    }
 }

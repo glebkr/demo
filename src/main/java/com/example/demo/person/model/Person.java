@@ -1,28 +1,21 @@
-package com.example.demo.model;
+package com.example.demo.person.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
+import javax.persistence.Entity;
 
-public class Person {
-
-    private final UUID id;
-
-    @NotBlank
-    private final String name;
-
+public record Person(UUID id, @NotBlank String name) {
 
     public Person(@JsonProperty("id") UUID id, @JsonProperty("name") String name) {
         this.id = id;
         this.name = name;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
 }
