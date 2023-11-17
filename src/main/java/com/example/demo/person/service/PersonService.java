@@ -1,11 +1,12 @@
 package com.example.demo.person.service;
 
-import com.example.demo.person.dao.PersonDao;
 import com.example.demo.person.model.Person;
+import com.example.demo.person.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,31 +14,33 @@ import java.util.UUID;
 @Service
 public class PersonService {
 
-    private final PersonDao personDao;
+    private final PersonRepository personRepository;
 
     @Autowired
-    public PersonService(@Qualifier("postgres") PersonDao personDao) {
-        this.personDao = personDao;
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
-    public int addPerson(Person person) {
-        return personDao.insertPerson(person);
+    public void addPerson(Person person) {
+        personRepository.save(person);
     }
 
     public List<Person> getAllPeople() {
-        return personDao.selectAllPeople();
+        return personRepository.getAllPersons();
     }
 
     public void removePersonById(UUID id) {
-        personDao.deletePersonById(id);
+        personRepository.deleteById(id);
     }
 
     public Optional<Person> getPersonById(UUID id) {
-        return personDao.getPersonById(id);
+        return personRepository.findById(id);
     }
 
+    @Transactional
     public void updatePerson(UUID id, Person person) {
-        personDao.updatePerson(id, person);
+        Person personDb = personRepository.findById(id).orElseThrow(() -> new IllegalStateException("The person wasn't found"));
+        personDb.setName(person.getName());
     }
 
 }

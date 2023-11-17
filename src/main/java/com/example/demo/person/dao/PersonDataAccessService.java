@@ -23,10 +23,11 @@ public class PersonDataAccessService implements PersonDao {
     public PersonDataAccessService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public int insertPerson(UUID id, Person person) {
         final String sql = "INSERT INTO person (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(sql, id, person.name());
+        jdbcTemplate.update(sql, id, person.getName());
         return 1;
     }
 
@@ -62,7 +63,7 @@ public class PersonDataAccessService implements PersonDao {
     @Override
     public void updatePerson(UUID id, Person person) {
         final String sql = "UPDATE person SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, person.name(), id);
+        jdbcTemplate.update(sql, person.getName(), id);
     }
 
 }

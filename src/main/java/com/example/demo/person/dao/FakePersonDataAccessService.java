@@ -15,7 +15,7 @@ public class FakePersonDataAccessService implements PersonDao {
 
     @Override
     public int insertPerson(UUID id, Person person) {
-        DB.add(new Person(id,  person.name()));
+        DB.add(new Person(id, person.getName()));
         return 1;
     }
 
@@ -32,7 +32,7 @@ public class FakePersonDataAccessService implements PersonDao {
 
     @Override
     public Optional<Person> getPersonById(UUID id) {
-        return DB.stream().filter(person -> person.id().equals(id)).findFirst();
+        return DB.stream().filter(person -> person.getId().equals(id)).findFirst();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class FakePersonDataAccessService implements PersonDao {
                 .map(p -> {
                     int indexOfPerson = DB.indexOf(p);
                     if (indexOfPerson >= 0) {
-                        DB.set(indexOfPerson, new Person(id, person.name()));
+                        DB.set(indexOfPerson, new Person(id, person.getName()));
                         return 1;
                     }
                     return 0;

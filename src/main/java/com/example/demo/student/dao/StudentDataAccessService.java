@@ -34,7 +34,7 @@ public class StudentDataAccessService implements StudentDao {
     @Override
     public void insertStudent(UUID id, Student student) {
         final String sql = "INSERT INTO student (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(sql, id, student.name());
+        jdbcTemplate.update(sql, id, student.getName());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class StudentDataAccessService implements StudentDao {
     @Override
     public void updateStudent(UUID id, Student student) {
         final String sql = "UPDATE student SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, student.name(), id);
+        jdbcTemplate.update(sql, student.getName(), id);
     }
 
 

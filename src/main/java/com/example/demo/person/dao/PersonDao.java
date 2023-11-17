@@ -21,6 +21,6 @@ public interface PersonDao {
 
     Optional<Person> getPersonById(UUID id);
 
-    void updatePerson (UUID id, Person person);
+    void updatePerson(UUID id, Person person);
 
 }
