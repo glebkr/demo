@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table
 public class Student {
-
     @Id
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @GeneratedValue(generator = "uuid2")

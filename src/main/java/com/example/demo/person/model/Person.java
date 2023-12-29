@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table
 public class Person {
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")

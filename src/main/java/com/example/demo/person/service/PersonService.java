@@ -4,6 +4,8 @@ import com.example.demo.person.model.Person;
 import com.example.demo.person.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,8 +27,12 @@ public class PersonService {
         personRepository.save(person);
     }
 
-    public List<Person> getAllPeople() {
+    public List<Person> getAllPersons() {
         return personRepository.getAllPersons();
+    }
+
+    public Page<Person> getPageWithPeople(PageRequest pageRequest) {
+        return personRepository.findAll(pageRequest);
     }
 
     public void removePersonById(UUID id) {
