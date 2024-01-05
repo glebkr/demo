@@ -3,6 +3,7 @@ package com.example.demo.student.api;
 
 import com.example.demo.student.model.Student;
 import com.example.demo.student.service.StudentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +13,10 @@ import java.util.UUID;
 
 @RequestMapping(path = "/api/v1/student")
 @RestController
+@RequiredArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
-
-    @Autowired
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
 
     @GetMapping
     public List<Student> getAllStudents() {

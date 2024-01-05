@@ -2,7 +2,12 @@ package com.example.demo.person.api;
 
 import com.example.demo.person.model.Person;
 import com.example.demo.person.service.PersonService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.rabbitmq.RabbitConfig;
+import com.example.demo.rabbitmq.Receiver;
+import com.rabbitmq.client.AMQP;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,30 +18,33 @@ import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Table;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RequestMapping(value = "/api/v1/person")
 @RestController
 @EnableCaching
+@RequiredArgsConstructor
 public class PersonController {
 
     private final PersonService personService;
-
-    @Autowired
-    public PersonController(PersonService personService) {
-        this.personService = personService;
-    }
+    private final RabbitTemplate rabbitTemplate;
+    private final Receiver receiver;
 
     @PostMapping
+    @CachePut(key = "#person.id", value = "persons")
     public void addPerson(@Valid @NonNull @RequestBody Person person) {
         personService.addPerson(person);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @Cacheable(value = "persons")
-    public List<Person> getAllPeople() {
+    public List<Person> getAllPeople() throws Exception {
+        rabbitTemplate.sendAndReceive(RabbitConfig.topicExchangeName, "foo.bar.baz", new Message("Hellooo".getBytes()));
+       // receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
         return personService.getAllPersons();
     }
 
