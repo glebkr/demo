@@ -1,45 +1,39 @@
 pipeline {
   
   environment {
-    dockerimagename = "glebkr/spring-demo"
-    dockerImage = ""
+    dockerimagename = "glebkr/demo-spring"
   }
-  
+    
   agent any
-  
+    
+  tools {
+    maven 'maven'
+  }
+    
   stages {
     
-    stage('Checkout Source') {
+    stage('Build Maven') {
       steps {
-        git 'https://github.com/glebkr/demo.git'
+        checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/glebkr/demo']])
+        bat 'mvn clean install'
       }
-    }
-  
-    stage('Build image') {
-      steps {
-        script {
-          dockerImage =  docker.build dockerimagename
-        }
-      }
-    }
-  
-    stage('Pushing Image') {
-        environment {
-            registryCredential = 'dockerhublogin'
-        }
-        steps {
-          script {
-            docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-              dockerImage.push("latest")
-            }            
-          }
-        }
     }
 
-    stage('Deploying App to Kubernetes') {
+    stage('Build docker image') {
       steps {
         script {
-          kubernetesDeploy(config: "demo-service.yaml", kubeconfigId: "kubernetes")
+          bat "docker build -t ${dockerimagename} ."
+        }
+      }
+    }
+
+    stage('Push image to docker hub') {
+      steps {
+        script {
+          withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+            bat "docker login -u glebkr -p ${dockerhubpwd}"
+            bat "docker push ${dockerimagename}"
+          }
         }
       }
     }
