@@ -4,7 +4,6 @@ import com.example.demo.person.model.Person;
 import com.example.demo.person.service.PersonService;
 import com.example.demo.rabbitmq.RabbitConfig;
 import com.example.demo.rabbitmq.Receiver;
-import com.rabbitmq.client.AMQP;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,11 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Table;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @RequestMapping(value = "/api/v1/person")
 @RestController
