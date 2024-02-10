@@ -23,8 +23,16 @@ public class PersonServiceTest {
 
     @Test
     void getAllPeople() {
-        Person person1 = new Person(UUID.randomUUID(), "Gleb");
-        Person person2 = new Person(UUID.randomUUID(), "Raichi");
+        var person1 = Person.builder()
+                .id(UUID.randomUUID())
+                .name("Gleb")
+                .role("Admin")
+                .salary(6000).build();
+        var person2 = Person.builder()
+                .id(UUID.randomUUID())
+                .name("Raichi")
+                .role("Admin")
+                .salary(6000).build();
         Mockito.when(personRepository.getAllPersons()).thenReturn(List.of(person1, person2));
 
         List<Person> list = personService.getAllPersons();

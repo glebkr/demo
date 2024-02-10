@@ -5,17 +5,19 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
+
 
 @SpringBootApplication
 public class DemoApplication {
-	private static final Logger logger = LogManager.getLogger(DemoApplication.class.getName());
+    private static final Logger logger = LogManager.getLogger(DemoApplication.class.getName());
 
-	public static void main(String[] args) {
-		logger.debug("Debug message");
-		logger.info("Info message");
-		logger.warn("Warn message");
-		logger.error("Error message");
-		logger.fatal("Fatal message");
+    public static void main(String[] args) {
+        logger.debug("Debug message");
+        logger.info("Info message");
+        logger.warn("Warn message");
+        logger.error("Error message");
+        logger.fatal("Fatal message");
 
 		SpringApplication.run(DemoApplication.class, args);
 	}

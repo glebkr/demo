@@ -38,7 +38,11 @@ public class PersonDataAccessService implements PersonDao {
         return jdbcTemplate.query(sql, (resultSet, i) -> {
             UUID id = UUID.fromString(resultSet.getString("id"));
             String name = resultSet.getString("name");
-            return new Person(id, name);
+            return Person.builder()
+                    .id(id)
+                    .name(name)
+                    .role("Admin")
+                    .salary(6000).build();
         });
     }
 
@@ -55,7 +59,11 @@ public class PersonDataAccessService implements PersonDao {
                 sql, (resultSet, i) -> {
                     UUID personId = UUID.fromString(resultSet.getString("id"));
                     String name = resultSet.getString("name");
-                    return new Person(personId, name);
+                    return Person.builder()
+                            .id(personId)
+                            .name(name)
+                            .role("Admin")
+                            .salary(6000).build();
                 }, id);
         return Optional.ofNullable(person);
     }

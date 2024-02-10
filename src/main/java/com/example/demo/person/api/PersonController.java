@@ -7,16 +7,21 @@ import com.example.demo.rabbitmq.Receiver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -33,15 +38,15 @@ public class PersonController {
 
     @PostMapping
     @CachePut(key = "#person.id", value = "persons")
-    public void addPerson(@Valid @NonNull @RequestBody Person person) {
+    public void addPerson(@Valid @RequestBody Person person) {
         personService.addPerson(person);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @Cacheable(value = "persons")
     public List<Person> getAllPeople() throws Exception {
-        rabbitTemplate.sendAndReceive(RabbitConfig.topicExchangeName, "foo.bar.baz", new Message("Hellooo".getBytes()));
-       // receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
+//        rabbitTemplate.sendAndReceive(RabbitConfig.topicExchangeName, "foo.bar.baz", new Message("Hellooo".getBytes()));
+//        receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
         return personService.getAllPersons();
     }
 
@@ -64,7 +69,7 @@ public class PersonController {
 
     @PutMapping(path = "{id}")
     @CachePut(key = "#id", value = "persons")
-    public void updatePerson(@PathVariable("id") UUID id, @Valid @NonNull @RequestBody Person person) {
+    public void updatePerson(@PathVariable("id") UUID id, @Valid @RequestBody Person person) {
         personService.updatePerson(id, person);
     }
 
