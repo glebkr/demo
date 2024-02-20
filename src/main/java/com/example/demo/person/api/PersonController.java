@@ -2,33 +2,35 @@ package com.example.demo.person.api;
 
 import com.example.demo.person.model.Person;
 import com.example.demo.person.service.PersonService;
-import com.example.demo.rabbitmq.RabbitConfig;
 import com.example.demo.rabbitmq.Receiver;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.Message;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
 @RequestMapping(value = "/api/v1/person")
 @RestController
 @EnableCaching
+@Slf4j
 @RequiredArgsConstructor
 public class PersonController {
 
@@ -42,7 +44,7 @@ public class PersonController {
         personService.addPerson(person);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     @Cacheable(value = "persons")
     public List<Person> getAllPeople() throws Exception {
 //        rabbitTemplate.sendAndReceive(RabbitConfig.topicExchangeName, "foo.bar.baz", new Message("Hellooo".getBytes()));
@@ -57,8 +59,19 @@ public class PersonController {
 
     @GetMapping(path = "{id}")
     @Cacheable(key = "#id", value = "persons")
+    @Operation(summary = "Get a user by his id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User is found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Person.class)) } ),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "User is not found",
+                    content = @Content)})
     public Person getPersonById(@PathVariable("id") UUID id) {
-        return personService.getPersonById(id).orElse(null);
+        Person person = personService.getPersonById(id).orElse(null);
+        log.info(person.getId().toString());
+        return person;
     }
 
     @DeleteMapping(path = "{id}")

@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
-
 
 @SpringBootApplication
 public class DemoApplication {
@@ -19,7 +17,7 @@ public class DemoApplication {
         logger.error("Error message");
         logger.fatal("Fatal message");
 
-		SpringApplication.run(DemoApplication.class, args);
-	}
+        SpringApplication.run(DemoApplication.class, args);
+    }
 
 }
