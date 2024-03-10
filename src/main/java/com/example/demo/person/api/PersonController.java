@@ -1,18 +1,17 @@
 package com.example.demo.person.api;
 
+import com.example.demo.kafka.producer.KafkaMessagePublisher;
 import com.example.demo.person.model.Person;
 import com.example.demo.person.service.PersonService;
 import com.example.demo.rabbitmq.Receiver;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -21,9 +20,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +36,13 @@ public class PersonController {
     private final PersonService personService;
     private final RabbitTemplate rabbitTemplate;
     private final Receiver receiver;
+    private final KafkaTemplate<String, Object> template;
+    private final KafkaMessagePublisher kafkaMessagePublisher;
 
     @PostMapping
     @CachePut(key = "#person.id", value = "persons")
     public void addPerson(@Valid @RequestBody Person person) {
+        kafkaMessagePublisher.sendMessageToTopic(person.getName());
         personService.addPerson(person);
     }
 
@@ -62,8 +64,8 @@ public class PersonController {
     @Operation(summary = "Get a user by his id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User is found",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Person.class)) } ),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Person.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "User is not found",
