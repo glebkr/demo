@@ -5,19 +5,25 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 
+import java.time.Duration;
 import java.util.List;
 
 @org.springframework.context.annotation.Configuration
-@EnableCaching
 public class Configuration {
 
     @Bean
-    public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(List.of(
-                new ConcurrentMapCache("persons")
-        ));
-        return cacheManager;
+    public RedisCacheConfiguration cacheConfiguration() {
+        return RedisCacheConfiguration
+                .defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(20))
+                .serializeValuesWith(RedisSerializationContext
+                        .SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()));
     }
 }

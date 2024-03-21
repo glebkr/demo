@@ -28,7 +28,6 @@ import java.util.UUID;
 
 @RequestMapping(value = "/api/v1/person")
 @RestController
-@EnableCaching
 @Slf4j
 @RequiredArgsConstructor
 public class PersonController {
