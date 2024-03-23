@@ -41,7 +41,7 @@ public class PersonController {
     @PostMapping
     @CachePut(key = "#person.id", value = "persons")
     public void addPerson(@Valid @RequestBody Person person) {
-        kafkaMessagePublisher.sendMessageToTopic(person.getName());
+        kafkaMessagePublisher.sendEventsToTopic(person);
         personService.addPerson(person);
     }
 
