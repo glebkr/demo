@@ -16,7 +16,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,9 +39,9 @@ public class PersonController {
 
     @PostMapping
     @CachePut(key = "#person.id", value = "persons")
-    public void addPerson(@Valid @RequestBody Person person) {
-        kafkaMessagePublisher.sendEventsToTopic(person);
+    public Person addPerson(@Valid @RequestBody Person person) {
         personService.addPerson(person);
+        return person;
     }
 
     @GetMapping

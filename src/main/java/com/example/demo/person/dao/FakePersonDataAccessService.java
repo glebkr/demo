@@ -28,7 +28,6 @@ public class FakePersonDataAccessService implements PersonDao {
 
     @Override
     public List<Person> selectAllPeople() {
-        System.out.println("JIEGRIEGRIGER");
         return DB;
     }
 

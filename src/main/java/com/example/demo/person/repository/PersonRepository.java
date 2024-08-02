@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, UUID> {
 
-    @Query("SELECT p FROM Person p")
+    @Query(value = "SELECT p FROM Person p")
     public List<Person> getAllPersons();
 
 }

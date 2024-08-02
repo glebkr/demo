@@ -1,5 +1,6 @@
 package com.example.demo.person.service;
 
+import com.example.demo.kafka.producer.KafkaMessagePublisher;
 import com.example.demo.person.model.Person;
 import com.example.demo.person.repository.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final KafkaMessagePublisher kafkaMessagePublisher;
 
     public void addPerson(Person person) {
-        personRepository.save(person);
+        var databasePerson = personRepository.saveAndFlush(person);
+        kafkaMessagePublisher.sendEventsToTopic(databasePerson);
     }
 
     public List<Person> getAllPersons() {

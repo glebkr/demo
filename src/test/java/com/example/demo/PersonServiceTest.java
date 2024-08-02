@@ -55,7 +55,9 @@ public class PersonServiceTest {
 
     @Test
     void divide_by_zero() {
-            Assertions.assertThrows(ArithmeticException.class, () -> { int a = 10 / 0; } );
+        Assertions.assertThrows(ArithmeticException.class, () -> {
+            int a = 10 / 0;
+        });
     }
 
 }
